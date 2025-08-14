@@ -7,6 +7,7 @@ export const Input = () => {
             <TextInput 
             placeholder ="00000-000"
             style={styles.input}
+            maxLength={8}
             ></TextInput>
         </View>
     )   
@@ -21,6 +22,7 @@ input:{
     borderBottomColor: '#939393',
     color:'#939393',
     padding: 5,
-    outlineStyle:'none'
+    outlineStyle:'none',
+     
 }
 })
