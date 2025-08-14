@@ -2,13 +2,38 @@ import { Text, View, StyleSheet, Image,ImageBackground, ScrollView } from "react
 import {Input} from "../components/input/input"
 import {Botao} from "../components/botao/botao"
 import {Card} from "../components/card/card"
+import { useState } from "react";
+import axios from "axios";
+
+
 export default function Index() {
+
+  const [cep, setCep] = useState("");
+  const [jsonCep, setJsonCep] = useState({});
+
+  async function consultarCep() {
+
+    try {
+      if(cep !== "" && cep.length === 8){
+        const resposta = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        
+        setJsonCep(resposta.data);
+        console.log(jsonCep);
+      }else{
+        alert("O cep está incorreto. DIGITE 8 números")
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
    <>
    {/* Logo com imgaem de fundo */}
-    <ImageBackground source={require('../assets/images/ImgFundo.png')}
+    <ImageBackground source={require("../assets/images/ImgFundo.png")}
     style={styles.imgFundo}>
-      <Image source={require('../assets/images/LogoFindCEP.png')}
+      <Image source={require("../assets/images/LogoFindCEP.png")}
       style={styles.logo}></Image>
 
     </ImageBackground>
@@ -19,13 +44,25 @@ export default function Index() {
       <Text style={styles.titulo}>Consulte seu CEP</Text>
 
       {/* Input */}
-      <Input/>
+      <Input
+      valorCep={cep}
+      onChangeValorCep={e => {setCep(e); console.log(e);}}
+      />
       {/* Botao */}
-      <Botao tituloBotao="Consultar"/>
+      <Botao tituloBotao="Consultar" onPress={consultarCep}/>
       {/* Card */}
-      <Card/>
+      {/* {jsonCep.cep && (  */}
+        <Card
+        cep={jsonCep.cep}
+        logradouro={jsonCep.logradouro}
+        bairro ={jsonCep.bairro}
+        uf={jsonCep.uf}
+        localidade={jsonCep.localidade}
+        complemento={jsonCep.complemento}
+        />
+      {/* )} */}
    </View>
-   </ScrollView>x
+   </ScrollView>
 
    </>
   );
@@ -58,8 +95,9 @@ containerScrolls:{
 },
 titulo:{
   fontSize: 25,
-  // fontFamily:"Poppins",
-  fontWeight:600,
-  fontStyle:"SemiBold"
+  fontFamily:"Poppins-Bold",
+  color: "#000000",
+  // fontWeight:600,  
+  // fontStyle:"SemiBold"
 }
 })
